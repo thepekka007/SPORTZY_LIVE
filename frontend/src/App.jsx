@@ -1,20 +1,20 @@
-import  {useState, useEffect} from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import Navbar from './components/Navbar';
+import CheckoutPage from './pages/CheckoutPage';
+import Login from "./pages/login";
+import Signup from "./pages/Signup";
+import PrivateRouter from './components/PrivateRouter';
 
 function App() {
-  const [message, setMessage] = useState('');
-
-  useEffect(() => {
-    fetch('http://127.0.0.1:8000/api/')
-      .then(response => response.json())
-      .then(data => setMessage(data.message))
-      .catch(error => console.error('Error fetching data:', error));
-  }, []);
-
-  return (
-    <div className="App">
-      <h1>{message|| "Welcome to Sportzy API"}</h1>
-    </div>
-  );
+    return (
+        <Router>
+            <Navbar />
+            <Routes>
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+            </Routes>
+        </Router>
+    );
 }
-
 export default App;
