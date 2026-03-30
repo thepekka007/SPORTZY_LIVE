@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import CheckoutPage from './pages/CheckoutPage';
 import Login from "./pages/login";
 import Signup from "./pages/Signup";
+import ClubReg from './pages/ClubReg';
 import PrivateRouter from './components/PrivateRouter';
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="/clubregister" element={<ClubReg />} />
             </Routes>
         </Router>
     );

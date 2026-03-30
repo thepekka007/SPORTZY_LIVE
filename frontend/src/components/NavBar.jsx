@@ -30,6 +30,10 @@ function Navbar() {
                         <Link to='/signup' className='text-gray-800 hover:text-gray-600 font-medium'>
                             Sign Up
                         </Link>
+                        <Link to='/clubregister' className='text-gray-800 hover:text-gray-600 font-medium'>
+                            Club Signup
+                        </Link>
+
                     </>
                 ) : (
                     <button onClick={handleLogout} className='text-gray-800 hover:text-gray-600 font-medium'>

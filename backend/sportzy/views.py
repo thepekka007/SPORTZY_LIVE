@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from .serializers import RegisterSerializer, UserSerializer
 from rest_framework import status
 from .models import Product, Category, Cart, CartItem, Order, OrderItem
-from .serializers import ProductSerializer, CategorySerializer, CartSerializer, CartItemSerializer
+from .serializers import ProductSerializer, CategorySerializer, CartSerializer, CartItemSerializer,ClubProfileSerializer
 
 @api_view(['GET'])
 def get_products(request):
@@ -119,4 +119,18 @@ def register_view(request):
     if serializer.is_valid():
         user = serializer.save()
         return Response({"message": "User created successfully", "user": UserSerializer(user).data}, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def create_club(request):
+    serializer = ClubProfileSerializer(data=request.data)
+    
+    if serializer.is_valid():
+        serializer.save()
+        return Response(
+            {"message": "Club created successfully", "data": serializer.data},
+            status=status.HTTP_201_CREATED
+        )
+    
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

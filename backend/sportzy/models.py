@@ -66,3 +66,12 @@ class CartItem(models.Model):
 
     def __str__(self):
         return f"{self.product.name} × {self.quantity}"
+
+class ClubProfile(models.Model):
+        uname = models.CharField(max_length=15, blank=False)
+        email = models.CharField(max_length=30, blank=False)
+        password = models.CharField(max_length=15, blank=False)
+        cpassword = models.CharField(max_length=15, blank=False)
+        phone = models.CharField(max_length=15, blank=False)
+        club_name = models.CharField(max_length=20,blank=False)
+    
