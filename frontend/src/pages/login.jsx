@@ -46,7 +46,7 @@ function Login() {
         <div className="mt-4 text-sm">
           Don't have an account?{" "}
           <a href="/signup" className="text-blue-600 hover:underline">
-            Sign up
+            Sign up tinto
           </a>
         </div>
       </div>
