@@ -1,48 +1,101 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
 function Signup() {
-  const BASE = import.meta.env.VITE_DJANGO_BASE_URL;
-  const [form, setForm] = useState({ username: "", email: "", password: "", password2: "" });
-  const [msg, setMsg] = useState("");
-  const nav = useNavigate();
+  const navigate = useNavigate();
 
-  const handleChange = e => setForm({...form, [e.target.name]: e.target.value});
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-  const handleSubmit = async e => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setMsg("");
-    try {
-      const res = await fetch(`${BASE}/api/register/`, {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify(form)
-      });
-      const data = await res.json();
-      if(res.ok) {
-        setMsg("Account created. Redirecting to login...");
-        setTimeout(()=>nav("/login"), 1200);
-      } else {
-        setMsg(data.username || data.password || JSON.stringify(data));
-      }
-    } catch(err) {
-      console.error(err);
-      setMsg("Signup failed");
+
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match");
+      return;
     }
+
+    alert("Signup Successful!");
+    navigate("/login");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6">
-      <div className="max-w-md w-full bg-white p-6 rounded shadow">
-        <h2 className="text-2xl font-bold mb-4">Signup</h2>
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <input name="username" onChange={handleChange} value={form.username} placeholder="Username" required className="w-full p-2 border rounded"/>
-          <input name="email" type="email" onChange={handleChange} value={form.email} placeholder="Email" className="w-full p-2 border rounded"/>
-          <input name="password" type="password" onChange={handleChange} value={form.password} placeholder="Password" required className="w-full p-2 border rounded"/>
-          <input name="password2" type="password" onChange={handleChange} value={form.password2} placeholder="Confirm Password" required className="w-full p-2 border rounded"/>
-          <button className="w-full bg-blue-600 text-white py-2 rounded">Create Account</button>
+    <div className="min-h-screen flex items-center justify-center 
+    bg-gray-100 dark:bg-gray-900 transition">
+
+      <div className="bg-white dark:bg-gray-800 
+      text-black dark:text-white 
+      p-8 rounded-2xl shadow-lg w-full max-w-md transition">
+
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Create Account
+        </h2>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+
+          <input
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            className="w-full p-3 border rounded-lg 
+            bg-white dark:bg-gray-700 text-black dark:text-white"
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            className="w-full p-3 border rounded-lg 
+            bg-white dark:bg-gray-700 text-black dark:text-white"
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            className="w-full p-3 border rounded-lg 
+            bg-white dark:bg-gray-700 text-black dark:text-white"
+            onChange={handleChange}
+            required
+          />
+
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            className="w-full p-3 border rounded-lg 
+            bg-white dark:bg-gray-700 text-black dark:text-white"
+            onChange={handleChange}
+            required
+          />
+
+          <button
+            type="submit"
+            className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600"
+          >
+            Sign Up
+          </button>
         </form>
-        {msg && <p className="mt-3 text-sm">{msg}</p>}
+
+        <p className="text-center mt-4">
+          Already have an account?{" "}
+          <Link to="/login" className="text-orange-500 font-semibold">
+            Login
+          </Link>
+        </p>
+
       </div>
     </div>
   );
