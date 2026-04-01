@@ -2,9 +2,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import Navbar from "./components/Navbar.jsx";
+import Navbar from "./components/NavBar.jsx";
 import BackgroundCarousel from "./components/BackgroundCarousel.jsx";
-import Login from "./pages/Login.jsx";
+import Login from "./pages/login.jsx";
 import Signup from "./pages/Signup.jsx";
 
 function App() {
