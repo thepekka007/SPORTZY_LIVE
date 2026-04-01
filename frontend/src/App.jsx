@@ -2,10 +2,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import Navbar from "./components/Navbar";
-import BackgroundCarousel from "./components/BackgroundCarousel";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import Navbar from "./components/Navbar.jsx";
+import BackgroundCarousel from "./components/BackgroundCarousel.jsx";
+import Login from "./pages/Login.jsx";
+import Signup from "./pages/Signup.jsx";
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);
