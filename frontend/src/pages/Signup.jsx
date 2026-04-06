@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 function Signup() {
+  const BASE = import.meta.env.VITE_DJANGO_BASE_URL;
+  const [form, setForm] = useState({ username: "", email: "", password: "", password2: "" });
+  const [msg, setMsg] = useState("");
   const navigate = useNavigate();
+
+  const handleChange = e => setForm({...form, [e.target.name]: e.target.value});
 
   const [formData, setFormData] = useState({
     name: "",
@@ -11,22 +16,32 @@ function Signup() {
     confirmPassword: "",
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
-  const handleSubmit = (e) => {
+const handleSubmit = async e => {
     e.preventDefault();
-
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match");
       return;
     }
-
-    alert("Signup Successful!");
-    navigate("/login");
+    setMsg("");
+    try {
+      const res = await fetch(`${BASE}/api/register/`, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(form)
+      });
+      const data = await res.json();
+      if(res.ok) {
+        setMsg("Account created. Redirecting to login...");
+        setTimeout(()=>nav("/login"), 1200);
+      } else {
+        setMsg(data.username || data.password || JSON.stringify(data));
+      }
+    } catch(err) {
+      console.error(err);
+      setMsg("Signup failed");
+    }
   };
-
   return (
     <div
       className="min-h-screen flex items-center justify-center 
@@ -53,11 +68,12 @@ function Signup() {
 
           <input
             type="text"
-            name="name"
+             name="username"
             placeholder="Full Name"
             className="w-full p-3 border rounded-lg 
             bg-white dark:bg-gray-700 text-black dark:text-white"
             onChange={handleChange}
+            value={form.username}
             required
           />
 
@@ -68,6 +84,7 @@ function Signup() {
             className="w-full p-3 border rounded-lg 
             bg-white dark:bg-gray-700 text-black dark:text-white"
             onChange={handleChange}
+            value={form.email}
             required
           />
 
@@ -78,16 +95,18 @@ function Signup() {
             className="w-full p-3 border rounded-lg 
             bg-white dark:bg-gray-700 text-black dark:text-white"
             onChange={handleChange}
+            value={form.password}
             required
           />
 
           <input
             type="password"
-            name="confirmPassword"
+            name="password2"
             placeholder="Confirm Password"
             className="w-full p-3 border rounded-lg 
             bg-white dark:bg-gray-700 text-black dark:text-white"
             onChange={handleChange}
+            value={form.password2}
             required
           />
 
@@ -98,6 +117,7 @@ function Signup() {
             Sign Up
           </button>
         </form>
+        {msg && <p className="text-red-500 text-center mt-4">{msg}</p>}
 
         <p className="text-center mt-4">
           Already have an account?{" "}

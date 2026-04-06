@@ -83,14 +83,13 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "sportzy_db",
-        'USER': "postgres",
-        'PASSWORD': "password",
-        'HOST': "localhost",
+        'NAME': "sportzy_database",
+        'USER': "root",
+        'PASSWORD': "ObkpD2aFvXqgiUYFHToA7W5HsepWycs6",
+        'HOST': "dpg-d79k0mvpm1nc73crmfq0-a.oregon-postgres.render.com",
         'PORT': "5432",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
