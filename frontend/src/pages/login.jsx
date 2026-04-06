@@ -1,11 +1,50 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 const Login = () => {
+const BASE = import.meta.env.VITE_DJANGO_BASE_URL;
+
+  const [form, setForm] = useState({ username: "", password: "" });
+  const [msg, setMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const nav = useNavigate();
+
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
+
+  const saveTokens = (data) => {
+    localStorage.setItem("access", data.access);
+    localStorage.setItem("refresh", data.refresh);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMsg("");
+
+    try {
+      const res = await fetch(`${BASE}/api/token/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        saveTokens(data);
+        setMsg("Login successful!");
+        setTimeout(() => nav("/"), 800);
+      } else {
+        setMsg(data.detail || "Invalid credentials");
+      }
+    } catch (err) {
+      console.error(err);
+      setMsg("Login failed");
+    }
+  };
   return (
     <div
       className="min-h-screen flex items-center justify-center 
@@ -16,7 +55,7 @@ const Login = () => {
       <div className="absolute inset-0 dark:bg-black/50"></div>
 
      
-
+      <form onSubmit={handleSubmit}>
       {/* Login Card */}
       <motion.div
         initial={{ opacity: 0, y: 50, scale: 0.9 }}
@@ -36,8 +75,11 @@ const Login = () => {
         {/* Email */}
         <motion.input
           whileFocus={{ scale: 1.05 }}
-          type="email"
-          placeholder="Email"
+          type="text"
+          name="username"
+          placeholder="Username"
+          value={form.username}
+          onChange={handleChange}
           className="w-full p-3 mb-4 rounded-lg 
           bg-gray-200 dark:bg-white/20 
           text-black dark:text-white 
@@ -48,6 +90,9 @@ const Login = () => {
         <motion.input
           whileFocus={{ scale: 1.05 }}
           type={showPassword ? "text" : "password"}
+          name="password"
+          value={form.password}
+          onChange={handleChange}
           placeholder="Password"
           className="w-full p-3 mb-4 rounded-lg 
           bg-gray-200 dark:bg-white/20 
@@ -72,12 +117,19 @@ const Login = () => {
 
         {/* Button */}
         <motion.button
+          type="submit"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className="w-full py-3 rounded-lg bg-orange-500 hover:bg-orange-600 font-semibold text-white"
         >
           Login
         </motion.button>
+
+        {/* Message */}
+          {msg && (
+            <p className="text-center text-sm mt-3 text-red-500">{msg}</p>
+          )}
+
 
         {/* Signup Link */}
         <p className="text-center text-sm mt-4">
@@ -87,6 +139,7 @@ const Login = () => {
           </Link>
         </p>
       </motion.div>
+            </form>
     </div>
   );
 };
