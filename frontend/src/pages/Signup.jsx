@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-
+import { motion } from "framer-motion";
 function Signup() {
   const navigate = useNavigate();
 
@@ -28,12 +28,22 @@ function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center 
-    bg-gray-100 dark:bg-gray-900 transition">
+    <div
+      className="min-h-screen flex items-center justify-center 
+      bg-gray-100 dark:bg-gradient-to-br dark:from-gray-900 dark:via-[#0d182e] dark:to-black 
+      transition-colors duration-500"
+    >
 
-      <div className="bg-white dark:bg-gray-800 
-      text-black dark:text-white 
-      p-8 rounded-2xl shadow-lg w-full max-w-md transition">
+ <motion.div
+        initial={{ opacity: 0, y: 50, scale: 0.9 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.6 }}
+        className="relative z-10 w-[350px] p-8 rounded-2xl 
+        bg-white dark:bg-white/10 
+        backdrop-blur-lg border border-gray-300 dark:border-white/20 
+        shadow-2xl 
+        text-black dark:text-white transition"
+      >
 
         <h2 className="text-2xl font-bold text-center mb-6">
           Create Account
@@ -95,8 +105,7 @@ function Signup() {
             Login
           </Link>
         </p>
-
-      </div>
+      </motion.div>
     </div>
   );
 }
