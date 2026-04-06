@@ -13,19 +13,19 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
     { name: "Create Tournament", path: "/create-tournament" },
     { name: "Tournament", path: "/tournament" },
     { name: "Ranking", path: "/ranking" },
-    { icon: <FaUserCircle size={20} /> , path: "/login", },
+    // { icon: <FaUserCircle size={25} /> , path: "/login", },
 
     // { name: "Signup", path: "/signup" },
   ];
 
   return (
-    <div className="flex justify-center w-full fixed z-50 mt-4">
+    <div className="w-full fixed top-0 left-0 z-50 lg:flex lg:justify-center lg:mt-4">
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className="w-full flex items-center justify-between 
-  bg-white dark:bg-gray-900 
-  px-4 lg:px-8 py-3 shadow-lg transition"
+        className="flex items-center justify-center 
+        bg-white dark:bg-gray-900 
+        rounded-2xl px-4 lg:px-8 py-2 shadow-lg transition"
       >
         <div className="flex items-center justify-between w-full space-x-6">
 
@@ -40,8 +40,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               <Link
                 key={item.name}
                 to={item.path}
-                className="text-gray-700 dark:text-gray-300 hover:text-orange-500"
-              >
+                className="text-gray-700 dark:text-gray-300 hover:text-orange-500">
                 {/* Icon */}
                 {item.icon && item.icon}
                 {item.name}
@@ -50,37 +49,49 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
           </div>
 
           {/* Right Section */}
-          <div className="flex items-center space-x-3">
-            
-            {/* Dark Mode Toggle */}
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 transition"
-            >
-              {darkMode ? (
-                <Sun className="text-yellow-300" />
-              ) : (
-                <Moon className="text-gray-700" />
-              )}
-            </button>
+         <div className="flex items-center space-x-3">
 
-            {/* Mobile Menu */}
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              {isMenuOpen ? <X /> : <Menu />}
-            </button>
-          </div>
+  {/* Login Icon - visible on all screens */}
+  <Link to="/login">
+    <FaUserCircle size={25} className="text-gray-700 dark:text-white" />
+  </Link>
+
+  {/* Dark Mode Toggle */}
+  <button
+    onClick={toggleDarkMode}
+    className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 transition"
+  >
+    {darkMode ? (
+      <Sun className="text-yellow-300" />
+    ) : (
+      <Moon className="text-gray-700" />
+    )}
+  </button>
+
+  {/* Mobile Menu Button */}
+  <button
+    className="lg:hidden"
+    onClick={() => setIsMenuOpen(!isMenuOpen)}
+  >
+    {isMenuOpen ? <X /> : <Menu />}
+  </button>
+
+</div>
         </div>
 
+
         {/* Mobile Dropdown */}
-        {isMenuOpen && (
-          <div className="absolute top-full left-0 right-0 
-          bg-white dark:bg-gray-900 shadow-lg mt-2">
+       {isMenuOpen && (
+          <div
+            className="absolute top-full left-0 right-0 
+            bg-white dark:bg-gray-900 shadow-lg  rounded-xl lg:hidden"
+          >
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 to={item.path}
                 onClick={() => setIsMenuOpen(false)}
-                className="block p-3 text-center text-gray-700 dark:text-white"
+                className="block p-3 text-center text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition"
               >
                 {item.name}
               </Link>
