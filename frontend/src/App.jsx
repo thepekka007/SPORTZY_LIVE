@@ -6,6 +6,7 @@ import Navbar from "./components/NavBar.jsx";
 import BackgroundCarousel from "./components/BackgroundCarousel.jsx";
 import Login from "./pages/login.jsx";
 import Signup from "./pages/Signup.jsx";
+import Register from "./pages/RegisterPlayer.jsx";
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);
@@ -26,6 +27,7 @@ function App() {
         <Route path="/" element={<BackgroundCarousel />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/register-player" element={<Register />} />
       </Routes>
     </div>
   );
