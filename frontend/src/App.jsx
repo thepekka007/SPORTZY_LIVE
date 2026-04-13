@@ -10,7 +10,7 @@ import Signup from "./pages/Signup.jsx";
 function App() {
   const [darkMode, setDarkMode] = useState(true);
 
-  // ✅ Apply dark mode globally
+  // ✅ Apply dark mode globally jnjbj
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
   }, [darkMode]);
