@@ -1,11 +1,13 @@
+import { useAuth } from "../context/AuthContext";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 
 const Login = () => {
 const BASE = import.meta.env.VITE_DJANGO_BASE_URL;
-
+const { login } = useAuth(); // ✅ ADD THIS
   const [form, setForm] = useState({ username: "", password: "" });
   const [msg, setMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -33,11 +35,34 @@ const BASE = import.meta.env.VITE_DJANGO_BASE_URL;
 
       const data = await res.json();
 
+      // if (res.ok) {
+      //   saveTokens(data);
+      //   setMsg("Login successful!");
+      //   setTimeout(() => nav("/"), 800);
+      // } 
       if (res.ok) {
-        saveTokens(data);
-        setMsg("Login successful!");
-        setTimeout(() => nav("/"), 800);
-      } else {
+  saveTokens(data);
+
+  const userRes = await fetch(`${BASE}/api/userprofile/`, {
+    headers: {
+      Authorization: `Bearer ${data.access}`,
+    },
+  });
+
+  const userData = await userRes.json();
+
+  const userInfo = {
+    id: userData.id,
+    username: userData.username,
+  };
+
+  login(userInfo); // ✅ context
+  localStorage.setItem("user", JSON.stringify(userInfo)); // ✅ persistence
+
+  alert(`Welcome, ${userData.username} 🎉`);
+
+  setTimeout(() => nav("/"), 800);
+}else {
         setMsg(data.detail || "Invalid credentials");
       }
     } catch (err) {

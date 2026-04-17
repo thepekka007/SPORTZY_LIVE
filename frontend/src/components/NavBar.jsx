@@ -1,9 +1,12 @@
+import { useAuth } from "../context/AuthContext";
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Sun, Moon, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";// ✅
 import { FaUserCircle } from "react-icons/fa";
 const Navbar = ({ darkMode, toggleDarkMode }) => {
+  const { user, logout } = useAuth();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
@@ -52,10 +55,29 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
          <div className="flex items-center space-x-3">
 
   {/* Login Icon - visible on all screens */}
+  {/* <Link to="/login">
+    <FaUserCircle size={25} className="text-gray-700 dark:text-white" />
+  </Link> */}
+{user ? (
+  <div className="flex items-center space-x-2">
+    <FaUserCircle size={25} className="text-gray-700 dark:text-white" />
+    
+    <span className="text-sm text-gray-700 dark:text-white">
+      {user.username}
+    </span>
+
+    <button
+      onClick={logout}
+      className="text-xs text-red-500 hover:underline"
+    >
+      Logout
+    </button>
+  </div>
+) : (
   <Link to="/login">
     <FaUserCircle size={25} className="text-gray-700 dark:text-white" />
   </Link>
-
+)}
   {/* Dark Mode Toggle */}
   <button
     onClick={toggleDarkMode}

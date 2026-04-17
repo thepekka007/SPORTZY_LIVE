@@ -1,3 +1,4 @@
+import { AuthProvider } from "./context/AuthContext";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
 import AOS from "aos";
@@ -28,7 +29,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
       </Routes>
     </div>
-  );
+    );
 }
 
 
