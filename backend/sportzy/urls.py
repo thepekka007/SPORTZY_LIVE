@@ -15,5 +15,8 @@ urlpatterns = [
   path('cart/update/', views.update_cart_quantity),
   path('orders/create/', views.create_order),
   path('clubregister/', views.create_club),
-    path('userprofile/', views.user_profile),
+  path('userprofile/', views.user_profile),
+  path('states/', views.get_states),
+  path('districts/<int:state_id>/', views.get_districts),
+  path('register-player/', views.register_player),
 ]

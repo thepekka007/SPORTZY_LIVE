@@ -83,10 +83,10 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': "sportzy_database",
+        'NAME': "sportzy1_database",
         'USER': "root",
-        'PASSWORD': "ObkpD2aFvXqgiUYFHToA7W5HsepWycs6",
-        'HOST': "dpg-d79k0mvpm1nc73crmfq0-a.oregon-postgres.render.com",
+        'PASSWORD': "SD0eI1jcWXaHUuY1HD2NyIBpYViuV2HE",
+        'HOST': "dpg-d7ulhvvavr4c73cq7et0-a.oregon-postgres.render.com",
         'PORT': "5432",
     }
 }

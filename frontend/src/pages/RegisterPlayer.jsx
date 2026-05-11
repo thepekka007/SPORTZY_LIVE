@@ -1,7 +1,29 @@
-import React, { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import React, { useEffect,useState } from "react";
 import footballImg from "../assets/images/bg_img1.jpg";
+import axios from "axios";
+import Select from "react-select";
+
+
 
 function RegisterPlayer() {
+
+  const [formData, setFormData] = useState({
+  full_name: "",
+  dob: "",
+  mobile: "",
+  post_office: "",
+  skill_level: "",
+  position: "",
+  height: "",
+  weight: "",
+});
+const BASE = import.meta.env.VITE_DJANGO_BASE_URL;
+const [states, setStates] = useState([]);
+const [districts, setDistricts] = useState([]);
+
+const [selectedState, setSelectedState] = useState(null);
+const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [value, setValue] = useState("");
   const [selected, setSelected] = useState([]);
 
@@ -12,7 +34,88 @@ function RegisterPlayer() {
       setSelected([...selected, sport]);
     }
   };
+useEffect(() => {
 
+  axios
+    .get(`${BASE}/api/states/`)
+    .then((res) => {
+
+      const formatted = res.data.map((state) => ({
+        value: state.id,
+        label: state.name,
+      }));
+
+      setStates(formatted);
+    })
+    .catch((err) => console.log(err));
+
+}, []);
+const handleStateChange = async (selectedOption) => {
+
+  setSelectedState(selectedOption);
+  setSelectedDistrict(null);
+
+  try {
+
+    const res = await axios.get(
+      `${BASE}/api/districts/${selectedOption.value}/`
+    );
+
+    const formatted = res.data.map((district) => ({
+      value: district.id,
+      label: district.name,
+    }));
+
+    setDistricts(formatted);
+
+  } catch (err) {
+    console.log(err);
+  }
+};
+const handleInputChange = (e) => {
+
+  setFormData({
+    ...formData,
+    [e.target.name]: e.target.value,
+  });
+
+};
+const handleSubmit = async (e) => {
+
+  e.preventDefault();
+
+  try {
+
+    const token = localStorage.getItem("access");
+
+    const payload = {
+      ...formData,
+      state: selectedState?.value,
+      district: selectedDistrict?.value,
+      sports: selected,
+    };
+
+    const res = await axios.post(
+      `${BASE}/api/register-player/`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    alert("Player Registered Successfully");
+
+    console.log(res.data);
+
+  } catch (err) {
+
+    console.log(err);
+
+    alert("Registration Failed");
+  }
+};
   return (
     <div
       className="min-h-screen w-full bg-cover bg-center flex items-center justify-center relative"
@@ -30,43 +133,74 @@ function RegisterPlayer() {
           Player Registration
         </h2>
 
-        <form className="grid grid-cols-1 md:grid-cols-2 gap-4 text-white">
-
+<form
+  onSubmit={handleSubmit}
+  className="grid grid-cols-1 md:grid-cols-2 gap-4 text-white"
+>
           {/* LEFT SIDE */}
           <div className="flex flex-col gap-3">
-            <input type="text" placeholder="Full Name" className="input" />
-            <input type="date" className="input" />
-            <input type="text" placeholder="Mobile Number" className="input" />
-            <select className="input">
-              <option value="">Select District</option>
-              <option>A</option>
-              <option>B</option>
-              <option>C</option>
-            </select>
-             <select className="input">
-              <option value="">Select State</option>
-              <option>A</option>
-              <option>B</option>
-              <option>C</option>
-            </select>
-            <input type="text" placeholder="Post Office" className="input" />
+<input
+  type="text"
+  name="full_name"
+  value={formData.full_name}
+  onChange={handleInputChange}
+  placeholder="Full Name"
+  className="input"
+/>            
+<input type="date"
+ name="dob"
+  value={formData.dob}
+   onChange={handleInputChange}
+    className="input" />
+
+<input type="text"
+ name="mobile"
+ value={formData.mobile}
+  onChange={handleInputChange}
+   placeholder="Mobile Number"
+    className="input" />
+<div className="text-black">
+
+            <Select
+              options={states}
+              value={selectedState}
+              onChange={handleStateChange}
+              placeholder="Search State..."
+              isSearchable
+            />
+
+          </div>
+
+          <div className="text-black">
+
+            <Select
+              options={districts}
+              value={selectedDistrict}
+              onChange={setSelectedDistrict}
+              placeholder="Search District..."
+              isSearchable
+            />
+
+          </div>
+            {/* <input type="text" name="post_office" value={formData.post_office} onChange={handleInputChange} placeholder="Post Office" className="input" /> */}
           </div>
 
           {/* RIGHT SIDE */}
           <div className="flex flex-col gap-3">
 
             {/* Skill Level */}
-            <select
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              className="input"
-            >
-              <option value="">Skill Level</option>
-              <option>Beginner</option>
-              <option>Intermediate</option>
-              <option>Advanced</option>
-              <option>Professional</option>
-            </select>
+<select
+  name="skill_level"
+  value={formData.skill_level}
+  onChange={handleInputChange}
+  className="input"
+>
+  <option value="">Skill Level</option>
+  <option value="Beginner">Beginner</option>
+  <option value="Intermediate">Intermediate</option>
+  <option value="Advanced">Advanced</option>
+  <option value="Professional">Professional</option>
+</select>
 
             {/* Sports Checkbox */}
             <div>
@@ -89,9 +223,9 @@ function RegisterPlayer() {
               </div>
             </div>
 
-            <input type="text" placeholder="Position" className="input" />
-            <input type="text" placeholder="Height" className="input" />
-            <input type="text" placeholder="Weight" className="input" />
+            <input type="text" name="position" value={formData.position} onChange={handleInputChange} placeholder="Position" className="input" />
+            <input type="text" name="height" value={formData.height} onChange={handleInputChange} placeholder="Height" className="input" />
+            <input type="text" name="weight" value={formData.weight} onChange={handleInputChange} placeholder="Weight" className="input" />
 
             {/* Club */}
             <select className="input">

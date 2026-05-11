@@ -12,7 +12,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
   const navItems = [
     { name: "Home", path: "/" },
     { name: "Register Club", path: "/register-club" },
-    { name: "Register Player", path: "/register-player" },
+    { name: "Profile", path: "/register-player" },
     { name: "Create Tournament", path: "/create-tournament" },
     { name: "Tournament", path: "/tournament" },
     { name: "Ranking", path: "/ranking" },

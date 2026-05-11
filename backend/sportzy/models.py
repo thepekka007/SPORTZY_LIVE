@@ -75,3 +75,105 @@ class ClubProfile(models.Model):
         phone = models.CharField(max_length=15, blank=False)
         club_name = models.CharField(max_length=20,blank=False)
     
+
+class State(models.Model):
+    id = models.IntegerField(primary_key=True)  # use your State Code
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class District(models.Model):
+    id = models.IntegerField(primary_key=True)   # District ID
+    state = models.ForeignKey(
+        State,
+        db_column='state_id',
+        related_name='districts',
+        on_delete=models.CASCADE
+    )
+
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        unique_together = ('state', 'name')
+
+    def __str__(self):
+        return f"{self.name} ({self.state.name})"
+
+
+class PostOffice(models.Model):
+    district = models.ForeignKey(District, related_name='post_offices', on_delete=models.CASCADE)
+    name = models.CharField(max_length=150)
+    pincode = models.CharField(max_length=10, blank=True, null=True)
+
+    class Meta:
+        unique_together = ('district', 'name')  # Prevent duplicates in same district
+
+    def __str__(self):
+        return f"{self.name} - {self.district.name}"
+    
+
+class Player(models.Model):
+
+    SKILL_CHOICES = (
+        ('Beginner', 'Beginner'),
+        ('Intermediate', 'Intermediate'),
+        ('Advanced', 'Advanced'),
+        ('Professional', 'Professional'),
+    )
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='players'
+    )
+
+    full_name = models.CharField(max_length=200)
+
+    dob = models.DateField()
+
+    mobile = models.CharField(max_length=15)
+
+    state = models.ForeignKey(
+        State,
+        on_delete=models.SET_NULL,
+        null=True
+    )
+
+    district = models.ForeignKey(
+        District,
+        on_delete=models.SET_NULL,
+        null=True
+    )
+
+    post_office = models.CharField(
+    max_length=100,
+    blank=True,
+    null=True
+)
+
+    skill_level = models.CharField(
+        max_length=20,
+        choices=SKILL_CHOICES
+    )
+
+    sports = models.JSONField(default=list)
+
+    position = models.CharField(max_length=100)
+
+    height = models.CharField(max_length=20)
+
+    weight = models.CharField(max_length=20)
+
+    club = models.ForeignKey(
+        ClubProfile,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.full_name

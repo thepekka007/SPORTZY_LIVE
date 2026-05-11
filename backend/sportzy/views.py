@@ -4,8 +4,8 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.models import User
 from .serializers import RegisterSerializer, UserSerializer
 from rest_framework import status
-from .models import Product, Category, Cart, CartItem, Order, OrderItem
-from .serializers import ProductSerializer, CategorySerializer, CartSerializer, CartItemSerializer,ClubProfileSerializer,UserSerializer
+from .models import Product, Category, Cart, CartItem, Order, OrderItem,ClubProfile,State,District,Player
+from .serializers import ProductSerializer, CategorySerializer, CartSerializer, CartItemSerializer,ClubProfileSerializer,UserSerializer,StateSerializer, DistrictSerializer,PlayerSerializer
 
 @api_view(['GET'])
 def get_products(request):
@@ -139,3 +139,41 @@ def create_club(request):
 def user_profile(request):
     serializer = UserSerializer(request.user)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_states(request):
+    states = State.objects.all().order_by('name')
+    serializer = StateSerializer(states, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_districts(request, state_id):
+
+    districts = District.objects.filter(
+        state_id=state_id
+    ).order_by('name')
+
+    serializer = DistrictSerializer(districts, many=True)
+
+    return Response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def register_player(request):
+
+    serializer = PlayerSerializer(data=request.data)
+
+    if serializer.is_valid():
+
+        serializer.save(user=request.user)
+
+        return Response({
+            "message": "Player Registered Successfully",
+            "data": serializer.data
+        })
+
+    return Response(serializer.errors, status=400)
+
