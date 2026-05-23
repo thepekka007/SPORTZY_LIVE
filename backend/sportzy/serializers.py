@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Category, Cart, CartItem,ClubProfile,UserProfile,State,District
+from .models import ClubProfiles, Product, Category, Cart, CartItem,ClubProfile,UserProfile,State,District
 from django.contrib.auth.models import User
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -80,10 +80,18 @@ class DistrictSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'state']
     
 from .models import Player
+from .models import MainMasterUser
 
 class PlayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Player
+        fields = '__all__'
+        read_only_fields = ['user']
+
+class ClubProfileSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ClubProfiles
         fields = '__all__'
         read_only_fields = ['user']

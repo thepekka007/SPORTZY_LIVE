@@ -116,139 +116,179 @@ const handleSubmit = async (e) => {
     alert("Registration Failed");
   }
 };
-  return (
+return (
+  <div
+    className="min-h-screen w-full bg-cover bg-center flex justify-center pt-[14vh] relative px-3 sm:px-6 py-6"
+    style={{ backgroundImage: `url(${footballImg})` }}
+  >
+    {/* Overlay */}
+    <div className="absolute inset-0 bg-black/60"></div>
+
+    {/* Form Card */}
     <div
-      className="min-h-screen w-full bg-cover bg-center flex items-center justify-center relative"
-      style={{ backgroundImage: `url(${footballImg})` }}
+      className="
+        relative z-10
+        w-full
+        max-w-md
+        lg:max-w-4xl
+        p-4
+        sm:p-6
+        md:p-8
+        rounded-2xl
+        bg-white/5
+        backdrop-blur-xl
+
+        border border-white/20
+        shadow-2xl
+        "
     >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/60"></div>
-
-      {/* Form Card */}
-      <div className="relative z-10 w-[95%] max-w-3xl p-8 rounded-2xl 
-      bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl
-      animate-fadeIn">
-
-        <h2 className="text-3xl font-bold text-center text-white mb-6">
-          Player Registration
-        </h2>
+      <h2 className="text-2xl sm:text-3xl font-bold text-center text-white mb-6">
+        Player Registration
+      </h2>
 
 <form
   onSubmit={handleSubmit}
-  className="grid grid-cols-1 md:grid-cols-2 gap-4 text-white"
+  className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 text-white"
 >
-          {/* LEFT SIDE */}
-          <div className="flex flex-col gap-3">
-<input
-  type="text"
-  name="full_name"
-  value={formData.full_name}
-  onChange={handleInputChange}
-  placeholder="Full Name"
-  className="input"
-/>            
-<input type="date"
- name="dob"
-  value={formData.dob}
-   onChange={handleInputChange}
-    className="input" />
 
-<input type="text"
- name="mobile"
- value={formData.mobile}
-  onChange={handleInputChange}
-   placeholder="Mobile Number"
-    className="input" />
-<div className="text-black">
+  {/* Full Name */}
+  <input
+    type="text"
+    name="full_name"
+    value={formData.full_name}
+    onChange={handleInputChange}
+    placeholder="Full Name"
+    className="input"
+  />
 
-            <Select
-              options={states}
-              value={selectedState}
-              onChange={handleStateChange}
-              placeholder="Search State..."
-              isSearchable
-            />
+  {/* DOB */}
+  <input
+    type="date"
+    name="dob"
+    value={formData.dob}
+    onChange={handleInputChange}
+    className="input"
+  />
 
-          </div>
+  {/* Mobile */}
+  <input
+    type="text"
+    name="mobile"
+    value={formData.mobile}
+    onChange={handleInputChange}
+    placeholder="Mobile Number"
+    className="input"
+  />
 
-          <div className="text-black">
+  {/* Skill */}
+  <select
+    name="skill_level"
+    value={formData.skill_level}
+    onChange={handleInputChange}
+    className="input"
+  >
+    <option value="">Skill Level</option>
+    <option value="Beginner">Beginner</option>
+    <option value="Intermediate">Intermediate</option>
+    <option value="Advanced">Advanced</option>
+    <option value="Professional">Professional</option>
+  </select>
 
-            <Select
-              options={districts}
-              value={selectedDistrict}
-              onChange={setSelectedDistrict}
-              placeholder="Search District..."
-              isSearchable
-            />
+  {/* State */}
+<div className="text-black w-full lg:col-span-1 col-span-1">
+      <Select
+      options={states}
+      value={selectedState}
+      onChange={handleStateChange}
+      placeholder="Search State..."
+      isSearchable
+    />
+  </div>
 
-          </div>
-            {/* <input type="text" name="post_office" value={formData.post_office} onChange={handleInputChange} placeholder="Post Office" className="input" /> */}
-          </div>
+  {/* District */}
+<div className="text-black w-full lg:col-span-1 col-span-1">
+      <Select
+      options={districts}
+      value={selectedDistrict}
+      onChange={setSelectedDistrict}
+      placeholder="Search District..."
+      isSearchable
+    />
+  </div>
 
-          {/* RIGHT SIDE */}
-          <div className="flex flex-col gap-3">
+  {/* Position */}
+  <input
+    type="text"
+    name="position"
+    value={formData.position}
+    onChange={handleInputChange}
+    placeholder="Position"
+    className="input"
+  />
 
-            {/* Skill Level */}
-<select
-  name="skill_level"
-  value={formData.skill_level}
-  onChange={handleInputChange}
-  className="input"
->
-  <option value="">Skill Level</option>
-  <option value="Beginner">Beginner</option>
-  <option value="Intermediate">Intermediate</option>
-  <option value="Advanced">Advanced</option>
-  <option value="Professional">Professional</option>
-</select>
+  {/* Height */}
+  <input
+    type="text"
+    name="height"
+    value={formData.height}
+    onChange={handleInputChange}
+    placeholder="Height"
+    className="input"
+  />
 
-            {/* Sports Checkbox */}
-            <div>
-              <p className="mb-2">Select Sports</p>
-              <div className="flex gap-4 flex-wrap">
-                {["Cricket", "Football", "Badminton"].map((sport) => (
-                  <label
-                    key={sport}
-                    className="flex items-center gap-2 cursor-pointer"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={selected.includes(sport)}
-                      onChange={() => handleChange(sport)}
-                      className="accent-orange-500"
-                    />
-                    {sport}
-                  </label>
-                ))}
-              </div>
-            </div>
+  {/* Weight */}
+  <input
+    type="text"
+    name="weight"
+    value={formData.weight}
+    onChange={handleInputChange}
+    placeholder="Weight"
+    className="input"
+  />
 
-            <input type="text" name="position" value={formData.position} onChange={handleInputChange} placeholder="Position" className="input" />
-            <input type="text" name="height" value={formData.height} onChange={handleInputChange} placeholder="Height" className="input" />
-            <input type="text" name="weight" value={formData.weight} onChange={handleInputChange} placeholder="Weight" className="input" />
+  {/* Sports */}
+  <div className="md:col-span-2">
+    <p className="mb-2">Select Sports</p>
 
-            {/* Club */}
-            <select className="input">
-              <option value="">Select Club</option>
-              <option>A</option>
-              <option>B</option>
-              <option>C</option>
-            </select>
-          </div>
-
-          {/* FULL WIDTH BUTTON */}
-          <div className="col-span-1 md:col-span-2">
-            <button
-              type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 transition duration-300 p-3 rounded-lg font-semibold"
-            >
-              Register
-            </button>
-          </div>
-        </form>
-      </div>
+    <div className="flex gap-4 flex-wrap">
+      {["Cricket", "Football", "Badminton"].map((sport) => (
+        <label
+          key={sport}
+          className="flex items-center gap-2 cursor-pointer"
+        >
+          <input
+            type="checkbox"
+            checked={selected.includes(sport)}
+            onChange={() => handleChange(sport)}
+            className="accent-orange-500"
+          />
+          {sport}
+        </label>
+      ))}
     </div>
-  );
+  </div>
+
+  {/* Club */}
+  <select className="input">
+    <option value="">Select Club</option>
+    <option>A</option>
+    <option>B</option>
+    <option>C</option>
+  </select>
+
+  {/* Button */}
+  <div className="md:col-span-2">
+    <button
+      type="submit"
+      className="w-full bg-orange-500 hover:bg-orange-600 p-3 rounded-lg"
+    >
+      Register
+    </button>
+  </div>
+</form>
+    </div>
+  </div>
+);
 }
 
 export default RegisterPlayer;
