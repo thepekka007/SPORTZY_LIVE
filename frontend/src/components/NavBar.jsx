@@ -9,18 +9,31 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const navItems = [
-    { name: "Home", path: "/" },
-    { name: "Register Club", path: "/register-club" },
-    { name: "Profile", path: "/register-player" },
-    { name: "Create Tournament", path: "/create-tournament" },
-    { name: "Tournament", path: "/tournament" },
-    { name: "Ranking", path: "/ranking" },
-    // { icon: <FaUserCircle size={25} /> , path: "/login", },
+const navItems = [
+  { name: "Home", path: "/" },
 
-    // { name: "Signup", path: "/signup" },
-  ];
+  // Show only if user exists
+  ...(user &&
+  user.account_type != 1 &&
+  user.account_type != 2
+    ? [{ name: "Register Club", path: "/RegisterClub" }]
+    : []),
 
+  ...(user &&
+  user.account_type != 1 &&
+  user.account_type != 2
+    ? [{ name: "Profile", path: "/register-player" }]
+    : []),
+
+  // Show only for account_type 2
+  ...(user && user.account_type == 2
+    ? [{ name: "Create Tournament", path: "/create-tournament" }]
+    : []),
+
+  { name: "Tournament", path: "/tournament" },
+
+  { name: "Ranking", path: "/ranking" },
+];
   return (
     <div className="w-full fixed top-0 left-0 z-50 lg:flex lg:justify-center lg:mt-4">
       <motion.nav

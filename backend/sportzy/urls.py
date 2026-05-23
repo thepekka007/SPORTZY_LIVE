@@ -19,4 +19,5 @@ urlpatterns = [
   path('states/', views.get_states),
   path('districts/<int:state_id>/', views.get_districts),
   path('register-player/', views.register_player),
+  path('register-club/', views.register_club),
 ]

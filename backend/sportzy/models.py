@@ -177,3 +177,116 @@ class Player(models.Model):
 
     def __str__(self):
         return self.full_name
+    
+class MainMasterUser(models.Model):
+    user = models.ForeignKey(
+    User,
+    on_delete=models.CASCADE,
+    related_name='main_master_users'
+    )
+
+    account_type = models.CharField(
+        max_length=20
+    )
+
+class ClubProfiles(models.Model):
+
+    SPORTS_CHOICES = (
+        ('Football', 'Football'),
+        ('Cricket', 'Cricket'),
+        ('Volleyball', 'Volleyball'),
+        ('Kabaddi', 'Kabaddi'),
+        ('Badminton', 'Badminton'),
+        ('Athletics', 'Athletics'),
+    )
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='clubs'
+    )
+
+    club_name = models.CharField(max_length=200)
+
+    founded_year = models.PositiveIntegerField(
+        null=True,
+        blank=True
+    )
+
+    registration_number = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    contact_person = models.CharField(max_length=150)
+
+    mobile = models.CharField(max_length=15)
+
+    email = models.EmailField(
+        blank=True,
+        null=True
+    )
+
+    state = models.ForeignKey(
+        State,
+        on_delete=models.SET_NULL,
+        null=True
+    )
+
+    district = models.ForeignKey(
+        District,
+        on_delete=models.SET_NULL,
+        null=True
+    )
+
+    address = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    pincode = models.CharField(
+        max_length=10,
+        blank=True,
+        null=True
+    )
+
+    stadium_name = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True
+    )
+
+    home_ground = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True
+    )
+
+    total_players = models.PositiveIntegerField(
+        default=0
+    )
+
+    sports = models.JSONField(default=list)
+
+    achievements = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    instagram = models.URLField(
+        blank=True,
+        null=True
+    )
+
+    facebook = models.URLField(
+        blank=True,
+        null=True
+    )
+
+    is_verified = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.club_name

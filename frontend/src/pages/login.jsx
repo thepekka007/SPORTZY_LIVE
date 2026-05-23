@@ -54,6 +54,7 @@ const { login } = useAuth(); // ✅ ADD THIS
   const userInfo = {
     id: userData.id,
     username: userData.username,
+    account_type: userData.account_type,
   };
 
   login(userInfo); // ✅ context

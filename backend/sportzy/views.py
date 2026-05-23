@@ -4,8 +4,8 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.models import User
 from .serializers import RegisterSerializer, UserSerializer
 from rest_framework import status
-from .models import Product, Category, Cart, CartItem, Order, OrderItem,ClubProfile,State,District,Player
-from .serializers import ProductSerializer, CategorySerializer, CartSerializer, CartItemSerializer,ClubProfileSerializer,UserSerializer,StateSerializer, DistrictSerializer,PlayerSerializer
+from .models import MainMasterUser, Product, Category, Cart, CartItem, Order, OrderItem,ClubProfile,State,District,Player
+from .serializers import ProductSerializer, CategorySerializer, CartSerializer, CartItemSerializer,ClubProfileSerializer,UserSerializer,StateSerializer, DistrictSerializer,PlayerSerializer,ClubProfileSerializer
 
 @api_view(['GET'])
 def get_products(request):
@@ -138,7 +138,13 @@ def create_club(request):
 @permission_classes([IsAuthenticated])   
 def user_profile(request):
     serializer = UserSerializer(request.user)
-    return Response(serializer.data)
+    account = MainMasterUser.objects.filter(
+        user=request.user
+    ).first()
+    return Response({
+        **serializer.data,
+        "account_type": account.account_type if account else 0
+    })
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
@@ -167,7 +173,14 @@ def register_player(request):
     serializer = PlayerSerializer(data=request.data)
 
     if serializer.is_valid():
+        player = serializer.save(user=request.user)
 
+        MainMasterUser.objects.get_or_create(
+            user=request.user,
+            defaults={
+                'account_type': 1
+            }
+        )
         serializer.save(user=request.user)
 
         return Response({
@@ -177,3 +190,26 @@ def register_player(request):
 
     return Response(serializer.errors, status=400)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def register_club(request):
+
+    serializer = ClubProfileSerializer(data=request.data)
+
+    if serializer.is_valid():
+
+        club = serializer.save(user=request.user)
+
+        MainMasterUser.objects.get_or_create(
+            user=request.user,
+            defaults={
+                'account_type': 2
+            }
+        )
+
+        return Response({
+            "message": "Club Registered Successfully",
+            "data": serializer.data
+        })
+
+    return Response(serializer.errors, status=400)
