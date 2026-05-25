@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ClubProfiles, Product, Category, Cart, CartItem,ClubProfile,UserProfile,State,District
+from .models import ClubProfiles, Product, Category, Cart, CartItem,ClubProfile,UserProfile,State,District,Tournament
 from django.contrib.auth.models import User
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -95,3 +95,67 @@ class ClubProfileSerializer(serializers.ModelSerializer):
         model = ClubProfiles
         fields = '__all__'
         read_only_fields = ['user']
+
+class TournamentSerializer(serializers.ModelSerializer):
+
+    banner = serializers.ImageField(required=False)
+
+    class Meta:
+        model = Tournament
+        fields = '__all__'
+        read_only_fields = [
+            'created_by',
+            'created_at',
+            'updated_at',
+        ]
+
+    def validate(self, data):
+
+        # Date Validation
+        start_date = data.get('start_date')
+        end_date = data.get('end_date')
+
+        if start_date and end_date:
+            if end_date < start_date:
+                raise serializers.ValidationError(
+                    "End date cannot be before start date."
+                )
+
+        # Football Validation
+        if data.get('sport') == 'football':
+
+            if not data.get('format'):
+                raise serializers.ValidationError(
+                    "Football format is required."
+                )
+
+            if data.get('format') not in ['5s', '6s', '7s', '11s']:
+                raise serializers.ValidationError(
+                    "Invalid football format."
+                )
+
+        # Cricket Validation
+        if data.get('sport') == 'cricket':
+
+            if not data.get('overs'):
+                raise serializers.ValidationError(
+                    "Overs field is required for cricket."
+                )
+
+        # Badminton Validation
+        if data.get('sport') == 'badminton':
+
+            if not data.get('category'):
+                raise serializers.ValidationError(
+                    "Category is required for badminton."
+                )
+
+        # Volleyball Validation
+        if data.get('sport') == 'volleyball':
+
+            if not data.get('set_format'):
+                raise serializers.ValidationError(
+                    "Set format is required for volleyball."
+                )
+
+        return data

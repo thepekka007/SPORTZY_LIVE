@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'sportzy',
     'corsheaders',
+    'rest_framework_simplejwt',
     
 ]
 
