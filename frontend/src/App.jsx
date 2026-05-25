@@ -9,6 +9,7 @@ import Login from "./pages/login.jsx";
 import Signup from "./pages/Signup.jsx";
 import Register from "./pages/RegisterPlayer.jsx";
 import RegisterClub from "./pages/RegisterClub.jsx";
+import CreateTournament from "./pages/CreateTournament.jsx";
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);
@@ -31,6 +32,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/register-player" element={<Register />} />
         <Route path="/RegisterClub" element={<RegisterClub />} />
+        <Route path="/create-tournament" element={<CreateTournament />} />
+
 
       </Routes>
     </div>

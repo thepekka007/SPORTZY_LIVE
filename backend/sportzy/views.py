@@ -4,9 +4,8 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.models import User
 from .serializers import RegisterSerializer, UserSerializer
 from rest_framework import status
-from .models import MainMasterUser, Product, Category, Cart, CartItem, Order, OrderItem,ClubProfile,State,District,Player
-from .serializers import ProductSerializer, CategorySerializer, CartSerializer, CartItemSerializer,ClubProfileSerializer,UserSerializer,StateSerializer, DistrictSerializer,PlayerSerializer,ClubProfileSerializer
-
+from .models import MainMasterUser, Product, Category, Cart, CartItem, Order, OrderItem,ClubProfile,State,District,Player,Tournament
+from .serializers import ProductSerializer, CategorySerializer, CartSerializer, CartItemSerializer,ClubProfileSerializer,UserSerializer,StateSerializer, DistrictSerializer,PlayerSerializer,ClubProfileSerializer,TournamentSerializer
 @api_view(['GET'])
 def get_products(request):
     products = Product.objects.all()
@@ -213,3 +212,25 @@ def register_club(request):
         })
 
     return Response(serializer.errors, status=400)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_tournament(request):
+
+    serializer = TournamentSerializer(data=request.data)
+
+    if serializer.is_valid():
+
+        tournament = serializer.save(
+            created_by=request.user
+        )
+
+        return Response({
+            "message": "Tournament Created Successfully",
+            "data": serializer.data
+        })
+
+    return Response(
+        serializer.errors,
+        status=400
+    )

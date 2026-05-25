@@ -290,3 +290,220 @@ class ClubProfiles(models.Model):
 
     def __str__(self):
         return self.club_name
+
+class Tournament(models.Model):
+
+    SPORT_CHOICES = (
+        ("football", "Football"),
+        ("cricket", "Cricket"),
+        ("badminton", "Badminton"),
+        ("volleyball", "Volleyball"),
+    )
+
+    FOOTBALL_FORMATS = (
+        ("5s", "5s"),
+        ("6s", "6s"),
+        ("7s", "7s"),
+        ("11s", "11s"),
+    )
+
+    CRICKET_FORMATS = (
+        ("t10", "T10"),
+        ("t20", "T20"),
+        ("oneday", "One Day"),
+    )
+
+    BADMINTON_FORMATS = (
+        ("singles", "Singles"),
+        ("doubles", "Doubles"),
+        ("mixed", "Mixed Doubles"),
+    )
+
+    VOLLEYBALL_FORMATS = (
+        ("indoor", "Indoor"),
+        ("beach", "Beach"),
+    )
+
+    # -----------------------------------
+    # BASIC DETAILS
+    # -----------------------------------
+
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="tournaments"
+    )
+
+    tournament_name = models.CharField(max_length=255)
+
+    organizer_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    contact_number = models.CharField(
+        max_length=20
+    )
+
+    whatsapp_number = models.CharField(
+        max_length=20,
+        blank=True,
+        null=True
+    )
+
+    location = models.CharField(max_length=255)
+
+    banner = models.ImageField(
+        upload_to="tournament_banners/",
+        blank=True,
+        null=True
+    )
+
+    # -----------------------------------
+    # SPORT DETAILS
+    # -----------------------------------
+
+    sport = models.CharField(
+        max_length=50,
+        choices=SPORT_CHOICES
+    )
+
+    format = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True
+    )
+
+    # -----------------------------------
+    # DATE DETAILS
+    # -----------------------------------
+
+    start_date = models.DateField()
+
+    end_date = models.DateField()
+
+    registration_deadline = models.DateField(
+        blank=True,
+        null=True
+    )
+
+    # -----------------------------------
+    # FINANCIAL DETAILS
+    # -----------------------------------
+
+    entry_fee = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
+
+    first_prize = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    second_prize = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    third_prize = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    mvp_prize = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True
+    )
+
+    # -----------------------------------
+    # FOOTBALL FIELDS
+    # -----------------------------------
+
+    squad_limit = models.PositiveIntegerField(
+        blank=True,
+        null=True
+    )
+
+    match_duration = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    # -----------------------------------
+    # CRICKET FIELDS
+    # -----------------------------------
+
+    overs = models.PositiveIntegerField(
+        blank=True,
+        null=True
+    )
+
+    # -----------------------------------
+    # BADMINTON FIELDS
+    # -----------------------------------
+
+    category = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    # -----------------------------------
+    # VOLLEYBALL FIELDS
+    # -----------------------------------
+
+    set_format = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True
+    )
+
+    # -----------------------------------
+    # COMMON SPORT FIELDS
+    # -----------------------------------
+
+    max_teams = models.PositiveIntegerField(
+        blank=True,
+        null=True
+    )
+
+    # -----------------------------------
+    # EXTRA DETAILS
+    # -----------------------------------
+
+    description = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    rules = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    # -----------------------------------
+    # STATUS
+    # -----------------------------------
+
+    is_active = models.BooleanField(default=True)
+
+    is_verified = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    # -----------------------------------
+    # STRING REPRESENTATION
+    # -----------------------------------
+
+    def __str__(self):
+        return self.tournament_name
