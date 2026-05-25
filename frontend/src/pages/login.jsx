@@ -48,7 +48,7 @@ const { login } = useAuth(); // ✅ ADD THIS
       Authorization: `Bearer ${data.access}`,
     },
   });
-  // alert(`Calling: ${BASE}/api/userprofile/`);
+   alert(`Calling: ${BASE}/api/userprofile/`);
   const userData = await userRes.json();
 
   const userInfo = {
