@@ -359,7 +359,10 @@ class Tournament(models.Model):
         blank=True,
         null=True
     )
-
+    banner_blob = models.BinaryField(
+        blank=True,
+        null=True
+    )
     # -----------------------------------
     # SPORT DETAILS
     # -----------------------------------
