@@ -61,8 +61,8 @@ const { login } = useAuth(); // ✅ ADD THIS
   localStorage.setItem("user", JSON.stringify(userInfo)); // ✅ persistence
 
   alert(`Welcome, ${userData.username} 🎉`);
-
-  setTimeout(() => nav("/"), 800);
+  setTimeout(() => nav("/tournament"), 800);
+  //setTimeout(() => nav("/"), 800);
 }else {
         setMsg(data.detail || "Invalid credentials");
       }

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from .serializers import RegisterSerializer, UserSerializer
 from rest_framework import status
 from .models import MainMasterUser, Product, Category, Cart, CartItem, Order, OrderItem,ClubProfile,State,District,Player,Tournament
-from .serializers import ProductSerializer, CategorySerializer, CartSerializer, CartItemSerializer,ClubProfileSerializer,UserSerializer,StateSerializer, DistrictSerializer,PlayerSerializer,ClubProfileSerializer,TournamentSerializer
+from .serializers import ProductSerializer, CategorySerializer, CartSerializer, CartItemSerializer,ClubProfileSerializer,UserSerializer,StateSerializer, DistrictSerializer,PlayerSerializer,ClubProfileSerializer,TournamentSerializer,TournamentListSerializer
 @api_view(['GET'])
 def get_products(request):
     products = Product.objects.all()
@@ -217,12 +217,14 @@ def register_club(request):
 @permission_classes([IsAuthenticated])
 def create_tournament(request):
 
-    serializer = TournamentSerializer(data=request.data)
-
+    serializer = TournamentSerializer(
+        data=request.data,
+        context={"request": request}
+    )
     if serializer.is_valid():
 
         tournament = serializer.save(
-            created_by=request.user
+                created_by=request.user
         )
 
         return Response({
@@ -234,3 +236,44 @@ def create_tournament(request):
         serializer.errors,
         status=400
     )
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_tournaments(request):
+
+    tournaments = Tournament.objects.order_by('-created_at')
+    #.filter(
+    #    is_active=True
+    #).order_by('-created_at')
+
+    serializer = TournamentListSerializer(
+        tournaments,
+        many=True,
+        context={'request': request}
+    )
+
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def check_user_status(request):
+
+    account = MainMasterUser.objects.filter(
+        user=request.user
+    ).first()
+
+    if not account:
+        return Response({
+            "registered": False,
+            "message": "Please register as a Player or Club first."
+        })
+
+    if str(account.account_type) == "0":
+        return Response({
+            "registered": False,
+            "message": "Please register as a Player or Club first."
+        })
+
+    return Response({
+        "registered": True,
+        "account_type": account.account_type
+    })

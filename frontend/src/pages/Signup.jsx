@@ -15,9 +15,103 @@ function Signup() {
     password: "",
     confirmPassword: "",
   });
+const validateForm = () => {
+  const username = form.username.trim();
+  const password = form.password;
 
+  // Username validations
+  if (username.length < 3) {
+    setMsg("Username must be at least 3 characters long.");
+    return false;
+  }
 
-const handleSubmit = async e => {
+  if (username.length > 20) {
+    setMsg("Username cannot exceed 20 characters.");
+    return false;
+  }
+
+  if (/\s/.test(username)) {
+    setMsg("Username cannot contain spaces.");
+    return false;
+  }
+
+  if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+    setMsg(
+      "Username can contain only letters, numbers, and underscore (_)."
+    );
+    return false;
+  }
+
+  // Password validations
+  if (password.length < 8) {
+    setMsg("Password must be at least 8 characters long.");
+    return false;
+  }
+
+  if (!/[A-Z]/.test(password)) {
+    setMsg("Password must contain at least one uppercase letter.");
+    return false;
+  }
+
+  if (!/[a-z]/.test(password)) {
+    setMsg("Password must contain at least one lowercase letter.");
+    return false;
+  }
+
+  if (!/\d/.test(password)) {
+    setMsg("Password must contain at least one number.");
+    return false;
+  }
+
+  if (!/[@$!%*?&]/.test(password)) {
+    setMsg(
+      "Password must contain at least one special character (@$!%*?&)."
+    );
+    return false;
+  }
+
+  if (form.password !== form.password2) {
+    setMsg("Passwords do not match.");
+    return false;
+  }
+
+  return true;
+};
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setMsg("");
+
+  if (!validateForm()) return;
+
+  try {
+    const res = await fetch(`${BASE}/api/register/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      setMsg("Account created successfully. Redirecting...");
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 1200);
+    } else {
+      setMsg(
+        data.username?.[0] ||
+          data.password?.[0] ||
+          data.email?.[0] ||
+          "Registration failed"
+      );
+    }
+  } catch (err) {
+    console.error(err);
+    setMsg("Signup failed");
+  }
+};
+/* const handleSubmit = async e => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match");
@@ -42,6 +136,7 @@ const handleSubmit = async e => {
       setMsg("Signup failed");
     }
   };
+  */
   return (
     <div
       className="min-h-screen flex items-center justify-center 
@@ -109,7 +204,15 @@ const handleSubmit = async e => {
             value={form.password2}
             required
           />
-
+        <div className="text-xs text-gray-500 mt-1">
+          Password must contain:
+          <ul className="list-disc ml-5">
+            <li>Minimum 8 characters</li>
+            <li>One uppercase and one lowercase letter</li>
+            <li>One number</li>
+            <li>One special character (@$!%*?&)</li>
+          </ul>
+        </div>
           <button
             type="submit"
             className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600"
@@ -129,5 +232,6 @@ const handleSubmit = async e => {
     </div>
   );
 }
+
 
 export default Signup;
