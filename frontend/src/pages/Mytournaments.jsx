@@ -302,21 +302,21 @@ const handleRegister = async (tournamentId) => {
                 <div className="card-content">
 
                    <div className="title-row">
-  <button
-    className="edit-btn"
-    onClick={() => navigate(`/EditTournament/${card.id}`)}
-  >
-    <FaEdit />
-  </button>
+                  <button
+                    className="edit-btn"
+                    onClick={() => navigate(`/EditTournament/${card.id}`)}
+                  >
+                    <FaEdit />
+                  </button>
 
-  <button
-    className={card.is_active ? "deactivate-btn" : "activate-btn"}
-    onClick={() => handleToggleStatus(card.id)}
-  >
-    {card.is_active ? "🔴 Deactivate" : "🟢 Activate"}
-  </button>
-</div>
-  <div className="date-box">
+                  <button
+                    className={card.is_active ? "deactivate-btn" : "activate-btn"}
+                    onClick={() => handleToggleStatus(card.id)}
+                  >
+                    {card.is_active ? "🔴 Deactivate" : "🟢 Activate"}
+                  </button>
+                </div>
+                <div className="date-box">
                             📅{" "}
                             {
                               card.start_date
