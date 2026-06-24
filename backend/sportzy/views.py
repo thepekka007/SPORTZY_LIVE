@@ -246,6 +246,13 @@ def create_tournament(request):
             status=500
         )
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_my_tournaments(request):
+    tournaments = Tournament.objects.filter(created_by=request.user).order_by('-created_at')
+    serializer = TournamentListSerializer(tournaments, many=True, context={'request': request})
+    return Response(serializer.data)
+
+@api_view(['GET'])
 @permission_classes([AllowAny])
 def get_tournaments(request):
 
@@ -285,4 +292,81 @@ def check_user_status(request):
     return Response({
         "registered": True,
         "account_type": account.account_type
+    })
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def tournaments_by_id(request,id):
+
+    tournament = Tournament.objects.filter(
+        id=id,
+        created_by=request.user
+    ).first()
+
+    if not tournament:
+        return Response({
+            "registered": False,
+            "message": "Tournament not found."
+        })
+
+    serializer = TournamentSerializer(tournament)
+    return Response(serializer.data)
+@api_view(['PUT', 'PATCH'])
+@permission_classes([IsAuthenticated])
+def update_tournament(request, id):
+    try:
+        tournament = Tournament.objects.filter(
+            id=id,
+            created_by=request.user
+        ).first()
+
+        if not tournament:
+            return Response({"message": "Tournament not found."}, status=404)
+
+
+        serializer = TournamentSerializer(
+            instance=tournament,   # 🔥 IMPORTANT FIX
+            data=request.data,
+            context={"request": request},
+            partial=True
+        )
+
+        if serializer.is_valid():
+            tournament = serializer.save()
+
+            return Response({
+                "message": "Tournament Updated Successfully",
+                "data": serializer.data
+            })
+
+        return Response(serializer.errors, status=400)
+
+
+    except Exception as e:
+        print("ERROR:", str(e))
+        print(traceback.format_exc())
+        return Response({"error": str(e)}, status=500)
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def toggle_tournament_status(request, pk):
+
+    tournament = Tournament.objects.filter(
+        id=pk,
+        created_by=request.user
+    ).first()
+
+    if not tournament:
+        return Response({"message": "Tournament not found."}, status=404)
+
+    tournament.is_active = not tournament.is_active
+    tournament.save()
+
+    return Response({
+        "message": (
+            "Tournament Activated"
+            if tournament.is_active
+            else "Tournament Deactivated"
+        ),
+        "is_active": tournament.is_active
     })

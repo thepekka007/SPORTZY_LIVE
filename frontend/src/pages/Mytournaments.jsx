@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../App.css";
 import { useNavigate } from "react-router-dom";
+import { FaEdit,FaTrash  } from "react-icons/fa";
 import { IndianRupee } from "lucide-react";
-
-
-function TournamentCards() {
+function Mytournaments() {
   const BASE = import.meta.env.VITE_DJANGO_BASE_URL;
   const [msg, setMsg] = useState("");
 
@@ -20,21 +19,41 @@ function TournamentCards() {
     fetchTournaments();
   }, []);
 
-  const fetchTournaments = async () => {
-    try {
-      const res = await axios.get(
-        `${BASE}/api/tournaments/`
-      );
+const fetchTournaments = async () => {
+  try {
+    const token = localStorage.getItem("access");
 
-      setTournaments(res.data);
-    } catch (error) {
-      console.error(error);
+    if (!token) {
+      navigate("/login");
+      return;
     }
-  };
 
-  const toggleCard = (id) => {
+    const res = await axios.get(
+      `${BASE}/api/mytournaments/`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setTournaments(res.data);
+  } catch (error) {
+    console.error(error);
+
+    if (error.response?.status === 401) {
+      alert("Session expired. Please login again.");
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+      localStorage.removeItem("user");
+      navigate("/login");
+    }
+  }
+};
+
+  const toggleCard = (index) => {
     setExpandedCard(
-      expandedCard === id ? null : id
+      expandedCard === index ? null : index
     );
   };
 const filteredTournaments = tournaments.filter((tournament) => {
@@ -98,26 +117,36 @@ const handleRegister = async (tournamentId) => {
     );
   }
 };
-  /*try {
-    const res = await fetch(`${BASE}/api/check_user_status/`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("access")}`,
-      },
-    });
+  const handleToggleStatus = async (id) => {
+  try {
+    const res = await fetch(
+      `${BASE}/api/toggletournamentstatus/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access")}`,
+        },
+      }
+    );
 
-   const data = await res.json();
+    const data = await res.json();
 
-    if (data.registered) {
-      navigate(`/register/${tournamentId}`);
-    } else {
-      setMsg(data.message);
+    if (res.ok) {
+      setTournaments((prev) =>
+        prev.map((card) =>
+          card.id === id
+            ? {
+                ...card,
+                is_active: data.is_active,
+              }
+            : card
+        )
+      );
     }
   } catch (err) {
     console.error(err);
-    setMsg("Registration Failed");
-  }*/
+  }
+};
   return (
 <div className="tournament-content">
       {/* FILTER SECTION */}
@@ -265,44 +294,50 @@ const handleRegister = async (tournamentId) => {
                       : "/placeholder.jpg"
                   }
                   alt={
-                    ""
+                    card.tournament_name
                   }
                   className="card-image"
                 />
 
                 <div className="card-content">
 
-                  <div className="title-row">
+                   <div className="title-row">
+                  <button
+                    className="edit-btn"
+                    onClick={() => navigate(`/EditTournament/${card.id}`)}
+                  >
+                    <FaEdit />
+                  </button>
 
-                    <h2 className="card-title">
-                      {
-                        ""
-                      }
-                    </h2>
+                  <button
+                    className={card.is_active ? "deactivate-btn" : "activate-btn"}
+                    onClick={() => handleToggleStatus(card.id)}
+                  >
+                    {card.is_active ? "🔴 Deactivate" : "🟢 Activate"}
+                  </button>
+                </div>
+                <div className="date-box">
+                            📅{" "}
+                            {
+                              card.start_date
+                            }
+                          </div>
 
-                    <div className="date-box">
-                      📅{" "}
-                      {
-                        card.start_date
-                      }
-                    </div>
-
-                  </div>
                   <div className="title-line"></div>
-
-                  <div className="fee-inline">
-                    <div className="fee-left">
-                      <IndianRupee size={16} />
-                      <span className="fee-label">Entry Fee</span>
+                            
+                    <div className="fee-inline">
+                      <div className="fee-left">
+                        <IndianRupee size={16} />
+                        <span className="fee-label">Entry Fee</span>
+                      </div>
+                      <span className="fee-value">{Number(card.entry_fee).toFixed(0)} </span>
                     </div>
-                    <span className="fee-value">{Number(card.entry_fee).toFixed(0)} </span>
-                  </div>
                   <p>
                     {" "}
                     {
                       card.tournament_name
                     }
-                  </p>      
+                  </p>
                   <p>
                     📍 Location :
                     {" "}
@@ -329,18 +364,18 @@ const handleRegister = async (tournamentId) => {
                     className="view-btn"
                     onClick={() =>
                       toggleCard(
-                        card.id
+                        index
                       )
                     }
                   >
                     {expandedCard ===
-                    card.id
+                    index
                       ? "Show Less ▲"
                       : "View More ▼"}
                   </button>
 
                   {expandedCard ===
-                    card.id && (
+                    index && (
                     <div className="extra-content">
 
                       <p>
@@ -399,4 +434,4 @@ const handleRegister = async (tournamentId) => {
   );
 }
 
-export default TournamentCards;
+export default Mytournaments;

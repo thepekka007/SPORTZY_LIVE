@@ -23,4 +23,12 @@ urlpatterns = [
   path('create-tournament/', views.create_tournament, name='create_tournament'),
   path('tournaments/', views.get_tournaments, name='get_tournaments'),
   path('check_user_status/', views.check_user_status, name='check_user_status'),
+  path('mytournaments/', views.get_my_tournaments, name='get_my_tournaments'),
+  path('tournament/<int:id>/', views.tournaments_by_id, name='tournaments_by_id'),
+  path('updatetournament/<int:id>/', views.update_tournament, name='update_tournament'),
+  path('toggletournamentstatus/<int:pk>/', views.toggle_tournament_status, name='toggle_tournament_status'),
+
+
+
+  
 ]
