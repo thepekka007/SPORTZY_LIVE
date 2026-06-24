@@ -27,12 +27,14 @@ const navItems = [
 
   // Show only for account_type 2
   ...(user && user.account_type == 2
-    ? [{ name: "Create Tournament", path: "/create-tournament" }]
+    ? [{ name: "Create Tournament", path: "/create-tournament" }, { name: "My Tournaments", path: "/Mytournaments" }]
     : []),
 
   { name: "Tournament", path: "/tournament" },
 
   { name: "Ranking", path: "/ranking" },
+
+
 ];
   return (
     <div className="w-full fixed top-0 left-0 z-50 lg:flex lg:justify-center lg:mt-4">

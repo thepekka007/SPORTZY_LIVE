@@ -173,6 +173,7 @@ class ClubProfileSerializer(serializers.ModelSerializer):
 class TournamentSerializer(serializers.ModelSerializer):
 
     banner = serializers.ImageField(required=False)
+    banner_preview = serializers.SerializerMethodField()
 
     class Meta:
         model = Tournament
@@ -194,7 +195,24 @@ class TournamentSerializer(serializers.ModelSerializer):
             image.seek(0)
 
         return Tournament.objects.create(**validated_data)
+    def update(self, instance, validated_data):
+        request = self.context.get("request")
 
+        image = request.FILES.get("banner")
+
+        if image:
+            instance.banner_blob = image.read()
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        instance.save()
+        return instance
+    def get_banner_preview(self, obj):
+        if obj.banner_blob:
+            encoded = base64.b64encode(obj.banner_blob).decode("utf-8")
+            return f"data:image/png;base64,{encoded}"
+        return None
     def validate(self, data):
 
         # Date Validation
